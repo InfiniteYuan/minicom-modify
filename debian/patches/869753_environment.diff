@@ -1,0 +1,38 @@
+diff -r 45b4f35fe495 -r d3e201383e46 src/minicom.c
+--- a/src/minicom.c	Sat Aug 12 16:35:58 2017 +0200
++++ b/src/minicom.c	Sat Aug 12 17:06:38 2017 +0200
+@@ -1015,6 +1015,7 @@
+   struct passwd *pwd;		/* To look up user name */
+   char *use_port;		/* Name of initialization file */
+   char *args[20];		/* New argv pointer */
++  char *args_buffer = NULL;
+   int argk = 1;			/* New argc */
+   char *mc;			/* For 'MINICOM' env. variable */
+   int env_args;			/* Number of args in env. variable */
+@@ -1131,13 +1132,12 @@
+    */
+   args[0] = "minicom";
+   if ((mc = getenv("MINICOM")) != NULL) {
+-    char buf[80];
+-    strncpy(buf, mc, 80);
+-    bufp = buf;
+-    buf[79] = 0;
++    args_buffer = strdup(mc);
++    assert(args_buffer);
++    bufp = args_buffer;
+     while (isspace(*bufp))
+       bufp++;
+-    while (*bufp && argk < 19) {
++    while (*bufp && argk < (int)sizeof(args) - 1) {
+       for (s = bufp; !isspace(*bufp) && *bufp; bufp++)
+ 	;
+       args[argk++] = s;
+@@ -1148,7 +1148,7 @@
+   env_args = argk;
+ 
+   /* Add command - line options */
+-  for(c = 1; c < argc && argk < 19; c++)
++  for(c = 1; c < argc && argk < (int)sizeof(args) - 1; c++)
+     args[argk++] = argv[c];
+   args[argk] = NULL;
+ 

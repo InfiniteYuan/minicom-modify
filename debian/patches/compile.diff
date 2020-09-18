@@ -1,0 +1,10 @@
+--- minicom-2.7.1.orig/src/minicom.c
++++ minicom-2.7.1/src/minicom.c
+@@ -28,6 +28,7 @@
+ #include <config.h>
+ #endif
+ 
++#include <assert.h>
+ #include <getopt.h>
+ #include <wchar.h>
+ #include <wctype.h>
