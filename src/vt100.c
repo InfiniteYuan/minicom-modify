@@ -896,6 +896,7 @@ void vt_out(int ch)
   if (!ch)
     return;
 
+  vt_line_timestamp = TIMESTAMP_LINE_EXTENDED;
   if (last_ch == '\n'
       && vt_line_timestamp != TIMESTAMP_LINE_OFF)
     {
@@ -905,10 +906,7 @@ void vt_out(int ch)
       struct tm tmstmp_tm;
 
       gettimeofday(&tmstmp_now, NULL);
-      if ((   vt_line_timestamp == TIMESTAMP_LINE_PER_SECOND
-           && tmstmp_now.tv_sec != tmstmp_last)
-          || vt_line_timestamp == TIMESTAMP_LINE_SIMPLE
-          || vt_line_timestamp == TIMESTAMP_LINE_EXTENDED)
+      if (vt_line_timestamp == TIMESTAMP_LINE_EXTENDED)
         {
           if (   localtime_r(&tmstmp_now.tv_sec, &tmstmp_tm)
               && strftime(s, sizeof(s), "[%F %T", &tmstmp_tm))
